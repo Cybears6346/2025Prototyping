@@ -1,0 +1,9 @@
+public class Driving {
+
+    public void ManualDrive (double speed, double rotation, boolean square){
+        double SpeedAdjust = 1
+        double RotationAdjust = 0.7
+        m_drive.arcadeDrive(-speed*SpeedAdjust, -rotation*RotationAdjust, square);
+    }
+
+}
