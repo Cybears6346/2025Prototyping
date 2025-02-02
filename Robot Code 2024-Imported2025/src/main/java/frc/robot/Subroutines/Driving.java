@@ -5,50 +5,41 @@
 package frc.robot.Subroutines;
 
 //These libraries are neccessary for the motors to run. These are can bus motors, not pwm.
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkRelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import com.revrobotics.config.BaseConfig;
+
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+
 
 public class Driving {
-
-    // CANSparkMax m_frontRight = new CANSparkMax(1, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 4
-    // CANSparkMax m_rearRight = new CANSparkMax(2, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 3
-    // CANSparkMax m_rearLeft = new CANSparkMax(3, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 1
-    // CANSparkMax m_frontLeft = new CANSparkMax(4, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 2
+    SparkMax m_frontRight = new SparkMax(1, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 4
+    SparkMax m_rearRight = new SparkMax(4, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 3
+    SparkMax m_rearLeft = new SparkMax(2, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 1
+    SparkMax m_frontLeft = new SparkMax(3, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 2
     
-    //Blinky is the back
-    CANSparkMax m_rearLeft = new CANSparkMax(4, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 1
-    CANSparkMax m_rearRight = new CANSparkMax(1, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 3
-    CANSparkMax m_frontLeft = new CANSparkMax(3, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 2
-    CANSparkMax m_frontRight = new CANSparkMax(2, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 4
+    SparkMax[] CANIDs= {m_frontRight, m_rearRight, m_rearLeft, m_frontLeft};
     
-
-    CANSparkMax[] CANIDs= {m_frontRight, m_rearRight, m_rearLeft, m_frontLeft};
-    
-    MotorControllerGroup m_Left = new MotorControllerGroup(m_frontLeft, m_rearLeft);
-    MotorControllerGroup m_Right = new MotorControllerGroup(m_frontRight, m_rearRight);
-
-    //DifferentialDrive m_drive = new DifferentialDrive(m_Left, m_Right);
     DifferentialDrive m_drive = new DifferentialDrive(m_frontLeft, m_frontRight);
-    //DifferentialDrive m_drive = new DifferentialDrive(m_rearLeft, m_rearRight);
 
-    RelativeEncoder d_Encoder_Left = m_frontLeft.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
+    RelativeEncoder d_Encoder_Left = m_frontLeft.getEncoder();
 
     public void Initial (){
-        //m_frontRight.setInverted(true);
-        //m_frontLeft.setInverted(true); //Minibot
-        //m_rearRight.setInverted(true); // Minibot
-        //m_rearLeft.setInverted(true);
+        SparkConfigure.Drive_Initialize(m_frontLeft, m_frontRight, m_rearLeft, m_rearRight);
     }
 
     public void ManualDrive (double speed, double rotation, boolean square){
         double speedPercentage = SmartDashboard.getNumber("Drive Speed %", Robot.kDefaultSpeed); //range 0.0 to 1.0
-        double rotationPercentage = 0.7; //range 0.0 to 1.0
+        double rotationPercentage = 0.7; //range 0.0 to 1.0 
         m_drive.arcadeDrive(-speed*speedPercentage, -rotation*rotationPercentage, square);
     }
 
@@ -57,7 +48,6 @@ public class Driving {
         double rotationPercentage = 0.7; //range 0.0 to 1.0
         m_drive.arcadeDrive(-speed*speedPercentage, -rotation*rotationPercentage, false);
     }
-
     public double Feet2Steps (double Distance_Feet){
         double StepsPerRev = 8.475;
         double enc_WheelCurrent = getEncoder();

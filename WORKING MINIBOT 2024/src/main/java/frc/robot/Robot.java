@@ -124,8 +124,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //Manual Drive Code: Controlled with Left Y and Right X thumb sticks on the Driver Controller
-    DriveSub.ManualDrive(DriverController.getRightX(), DriverController.getLeftY(),true);
-    // DriveSub.ManualDrive(DriverController.getLeftY(), DriverController.getRightX(),true);
+    // DriveSub.ManualDrive(DriverController.getRightX(), DriverController.getLeftY(),true);
+    DriveSub.ManualDrive(DriverController.getLeftY(), DriverController.getRightX(),true);
     
     //Winch Code: Controlled with the Right Y thumb stick on the Arm Controller
 

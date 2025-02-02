@@ -94,15 +94,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //Manual Drive Code: Controlled with Left Y and Right X thumb sticks on the Driver Controller
-    // DriveSub.ManualDrive(DriverController.getRightX(), DriverController.getLeftY(),true);
-    DriveSub.ManualDrive(DriverController.getRightX(), DriverController.getLeftY(),true);
+    DriveSub.ManualDrive(DriverController.getLeftY(), DriverController.getRightX(),true);
     
     //Winch Code: Controlled with the Right Y thumb stick on the Arm Controller
-    if(Math.abs(ArmController.getRightY())>0.25){
-      WinchSub.SetSpeed(ArmController.getRightY(), ArmController.getYButton());
-    } else {
-      WinchSub.SetSpeed(0.00, ArmController.getYButton());}
-
+    if(Math.abs(ArmController.getRightY())>0.25){WinchSub.SetSpeed(-ArmController.getRightY(), ArmController.getYButton());}
+    else{WinchSub.SetSpeed(0.00, ArmController.getYButton());}
 
     //Manual Arm Code: Controlled by Left Y on the Arm Controller
     //Minimum speed must always be 0.05 to prevent arm from dropping

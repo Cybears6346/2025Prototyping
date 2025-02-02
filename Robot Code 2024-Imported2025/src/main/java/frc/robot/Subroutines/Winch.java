@@ -4,10 +4,10 @@
 
 package frc.robot.Subroutines;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkRelativeEncoder;
+import com.revrobotics.spark.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj.Timer;
 
 
@@ -17,21 +17,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class Winch {
-    CANSparkMax m_winchLeft = new CANSparkMax(7, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 5
-    CANSparkMax m_winchRight = new CANSparkMax(8, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 6
+    SparkMax m_winchLeft = new SparkMax(7, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 5
+    SparkMax m_winchRight = new SparkMax(8, MotorType.kBrushless); //states the existance of a sparkmax with a CANid of 6
     
-    CANSparkMax[] CANIDs= {m_winchLeft, m_winchRight};
+    SparkMax[] CANIDs= {m_winchLeft, m_winchRight};
 
-    MotorControllerGroup m_winch = new MotorControllerGroup(m_winchLeft, m_winchRight);
+    // MotorControllerGroup m_winch = new MotorControllerGroup(m_winchLeft, m_winchRight);
 
-    RelativeEncoder w_Encoder = m_winchRight.getEncoder(SparkRelativeEncoder.Type.kHallSensor, 42);
+    RelativeEncoder w_Encoder = m_winchRight.getEncoder();
     DigitalInput LS_Winch = new DigitalInput(2);
     double enc_Winch_Zeroed;
     double enc_Winch_Top;
 
 
     public void Initial(){
-        m_winchLeft.setInverted(true);
+        SparkConfigure.winchInit(m_winchLeft, m_winchRight);
+        // m_winchLeft.setInverted(true);
         SmartDashboard.putBoolean("Winch LS", LS_Winch.get());
     }
     
@@ -39,11 +40,11 @@ public class Winch {
         double speedPercentage = 0.8; //range 0.0 to 1.0
         SmartDashboard.putBoolean("Winch LS", LS_Winch.get());
         //SmartDashboard.putNumber("Winch Encoder", getEncoder());
-        if ((speed < 0) || (getEncoder() > enc_Winch_Top && speed > 0) || (ControllerInput == true)){
-            m_winch.set(-speed*speedPercentage);
+        if (((LS_Winch.get() == true) && speed < 0) || (getEncoder() > enc_Winch_Top && speed > 0) || (ControllerInput == true)){
+            m_winchLeft.set(-speed*speedPercentage);
         }
         else{
-            m_winch.set(0);
+            m_winchLeft.set(0);
         }
     }
     
